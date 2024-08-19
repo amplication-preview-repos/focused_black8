@@ -1,0 +1,66 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Subscription {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Survey {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  questions   Json?
+  title       String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Business {
+  createdAt       DateTime         @default(now())
+  id              String           @id @default(cuid())
+  industry        String?
+  mission         String?
+  name            String?
+  sdgMappings     SdgMapping[]
+  surveyResponses SurveyResponse[]
+  updatedAt       DateTime         @updatedAt
+}
+
+model SdgMapping {
+  business    Business? @relation(fields: [businessId], references: [id])
+  businessId  String?
+  createdAt   DateTime  @default(now())
+  description String?
+  goalNumber  Int?
+  id          String    @id @default(cuid())
+  updatedAt   DateTime  @updatedAt
+}
+
+model SurveyResponse {
+  business     Business? @relation(fields: [businessId], references: [id])
+  businessId   String?
+  createdAt    DateTime  @default(now())
+  id           String    @id @default(cuid())
+  responseData Json?
+  responseDate DateTime?
+  updatedAt    DateTime  @updatedAt
+}
